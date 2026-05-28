@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulateur de Vélocité Commerciale · Ezo Consulting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --navy: #02073E;
+    --gold: #d4b96a;
+    --gold-light: #E7D49E;
+    --muted-blue: #b0b8d4;
+    --paper: #f4f4f4;
+    --surface: #ffffff;
+    --border: #e0d8c8;
+    --tag-bg: #f5ecd4;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --positive: #2da44e;
+    --negative: #e85c4a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Exo 2', Exo, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+  }
+  .header-logo {
+    padding: 24px 40px 18px;
+    text-align: center;
+  }
+  .header-logo img { height: 76px; display: inline-block; }
+  .header-line { height: 2px; background: var(--gold); margin: 0 40px; }
+  .header-body {
+    padding: 20px 40px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-text .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .header-text h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--gold-light);
+    margin-bottom: 4px;
+  }
+  .header-text p {
+    font-size: 0.82rem;
+    color: var(--muted-blue);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .currency-block label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .currency-block input {
+    padding: 8px 12px;
+    border: 1.5px solid var(--gold);
+    border-radius: 6px;
+    font-family: 'Exo 2', Exo, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    width: 72px;
+    background: transparent;
+    color: var(--gold-light);
+    text-align: center;
+  }
+
+  /* LAYOUT */
+  .app { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  .grid-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 800px) { .grid-two { grid-template-columns: 1fr; } }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    background: var(--navy);
+    padding: 0 20px;
+  }
+  .card-header-line { height: 2px; background: var(--gold); }
+  .card-header-body { padding: 14px 0 16px; }
+  .card-header h2 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--gold-light);
+  }
+  .card-body { padding: 20px; }
+
+  /* SCENARIO HEADERS */
+  .scenario-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  /* FORM ROWS */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .form-row label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  input[type="number"], select {
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Exo 2', Exo, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--paper);
+    width: 100%;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input[type="number"]:focus, select:focus {
+    border-color: var(--navy);
+    background: white;
+  }
+
+  /* VELOCITY TILES */
+  .tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) { .tiles { grid-template-columns: 1fr; } }
+  .tile {
+    background: var(--tag-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .tile-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .tile-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--navy);
+  }
+
+  /* VELOCITY SUMMARY in scenario */
+  .velocity-summary {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--navy);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--muted-blue);
+    font-weight: 500;
+  }
+  .velocity-summary strong { color: var(--gold-light); font-weight: 800; }
+
+  /* TABLE */
+  .table-wrap { overflow: auto; margin-top: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--navy);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--gold);
+    text-align: left;
+    background: var(--tag-bg);
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .delta-pos { color: var(--positive); font-weight: 800; }
+  .delta-neg { color: var(--negative); font-weight: 800; }
+  .delta-neu { color: var(--muted); font-weight: 600; }
+
+  /* ACTIONS */
+  .actions { margin-top: 14px; display: flex; gap: 10px; justify-content: flex-end; }
+  .btn {
+    padding: 10px 20px;
+    background: var(--navy);
+    color: var(--gold-light);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Exo 2', Exo, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: .03em;
+    transition: background .2s;
+  }
+  .btn:hover { background: #040d5c; }
+
+  /* SENSITIVITY */
+  .sens-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .sens-controls label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.72rem;
+    color: #999;
+    border-top: 1px solid var(--border);
+  }
+  footer strong { color: var(--gold); font-style: italic; }
+  footer em { font-style: italic; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">
+    <img src="https://img.mailinblue.com/9920749/images/content_library/original/698a078b724cb0509ee0c156.png" alt="Ezo Consulting">
+  </div>
+  <div class="header-line"></div>
+  <div class="header-body">
+    <div class="header-text">
+      <div class="label">EM Lyon · Performance Commerciale</div>
+      <h1>Simulateur de Vélocité Commerciale</h1>
+      <p>Calculez la vitesse à laquelle vous générez du chiffre d'affaires — et simulez l'impact de chaque levier.</p>
+    </div>
+    <div class="currency-block">
+      <label for="currency">Devise</label>
+      <input id="currency" type="text" value="€" maxlength="3" />
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- CALCUL PRINCIPAL -->
+  <div class="grid-two">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-line"></div>
+        <div class="card-header-body"><h2>Paramètres</h2></div>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <label for="opps">Nombre d'opportunités (N)</label>
+          <input id="opps" type="number" min="0" value="120"/>
+        </div>
+        <div class="form-row">
+          <label for="avgDeal">Valeur moyenne d'une affaire</label>
+          <input id="avgDeal" type="number" min="0" value="5000"/>
+        </div>
+        <div class="form-row">
+          <label for="winRate">Taux de conversion (%)</label>
+          <input id="winRate" type="number" min="0" max="100" step="0.1" value="25"/>
+        </div>
+        <div class="form-row">
+          <label for="cycle">Durée du cycle de vente (jours)</label>
+          <input id="cycle" type="number" min="1" value="60"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-line"></div>
+        <div class="card-header-body"><h2>Vélocité</h2></div>
+      </div>
+      <div class="card-body">
+        <div class="tiles">
+          <div class="tile">
+            <div class="tile-label">Par jour</div>
+            <div class="tile-value" id="perDay">€0</div>
+          </div>
+          <div class="tile">
+            <div class="tile-label">Par mois (~30j)</div>
+            <div class="tile-value" id="perMonth">€0</div>
+          </div>
+          <div class="tile">
+            <div class="tile-label">Par trimestre (~90j)</div>
+            <div class="tile-value" id="perQuarter">€0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARAISON A/B -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-line"></div>
+      <div class="card-header-body"><h2>Comparaison Scénario A / Scénario B</h2></div>
+    </div>
+    <div class="card-body">
+      <div class="grid-two" style="margin-bottom:0;">
+        <div>
+          <div class="scenario-label">Scénario A — Situation actuelle</div>
+          <div class="form-row"><label>Opportunités (N)</label><input id="a_opps" type="number" min="0" value="120"/></div>
+          <div class="form-row"><label>Valeur moyenne</label><input id="a_avg" type="number" min="0" value="5000"/></div>
+          <div class="form-row"><label>Taux de conversion (%)</label><input id="a_win" type="number" min="0" max="100" step="0.1" value="25"/></div>
+          <div class="form-row"><label>Cycle (jours)</label><input id="a_cyc" type="number" min="1" value="60"/></div>
+          <div class="velocity-summary">Vélocité / mois : <strong id="a_vm">€0</strong></div>
+        </div>
+        <div>
+          <div class="scenario-label">Scénario B — Et si…</div>
+          <div class="form-row"><label>Opportunités (N)</label><input id="b_opps" type="number" min="0" value="120"/></div>
+          <div class="form-row"><label>Valeur moyenne</label><input id="b_avg" type="number" min="0" value="5000"/></div>
+          <div class="form-row"><label>Taux de conversion (%)</label><input id="b_win" type="number" min="0" max="100" step="0.1" value="30"/></div>
+          <div class="form-row"><label>Cycle (jours)</label><input id="b_cyc" type="number" min="1" value="60"/></div>
+          <div class="velocity-summary">Vélocité / mois : <strong id="b_vm">€0</strong></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Indicateur</th>
+              <th>Scénario A</th>
+              <th>Scénario B</th>
+              <th>Δ% (B vs A)</th>
+            </tr>
+          </thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="copyAtoB">Copier A → B</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SENSIBILITÉ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-line"></div>
+      <div class="card-header-body"><h2>Analyse de Sensibilité (±% sur un levier)</h2></div>
+    </div>
+    <div class="card-body">
+      <div class="sens-controls">
+        <div>
+          <label for="var">Variable à analyser</label>
+          <select id="var">
+            <option value="opps">Opportunités (N)</option>
+            <option value="avgDeal">Valeur moyenne</option>
+            <option value="winRate">Taux de conversion</option>
+            <option value="cycle">Cycle de vente</option>
+          </select>
+        </div>
+        <div>
+          <label for="step">Pas de variation (±%)</label>
+          <input id="step" type="number" min="1" max="50" value="10"/>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Variation</th><th>Vélocité / mois</th><th>Δ vs base</th></tr>
+          </thead>
+          <tbody id="sensBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <strong>Selling @ Zero Distance</strong> · Formule : <em>Vélocité = (N × Valeur × Taux) ÷ Cycle (jours)</em> · Ezo Consulting
+</footer>
+
+<script>
+  function clamp(n, min=0, max=Infinity){ return Math.min(Math.max(Number(n)||0, min), max); }
+  function fmt(n){
+    return new Intl.NumberFormat('fr-FR', {maximumFractionDigits:0}).format(Math.round(n));
+  }
+  function cur(){ return document.getElementById("currency").value || "€"; }
+
+  function computeVelocity({opps, avgDeal, winRatePct, cycleDays}){
+    const win = clamp(winRatePct, 0, 100) / 100;
+    const days = Math.max(1, Number(cycleDays) || 1);
+    const perDay = (Number(opps)||0) * (Number(avgDeal)||0) * win / days;
+    return { perDay, perMonth: perDay * 30, perQuarter: perDay * 90 };
+  }
+
+  function getMain(){
+    return {
+      opps: Number(document.getElementById("opps").value)||0,
+      avgDeal: Number(document.getElementById("avgDeal").value)||0,
+      winRatePct: Number(document.getElementById("winRate").value)||0,
+      cycleDays: Number(document.getElementById("cycle").value)||1,
+    };
+  }
+
+  function getScenario(prefix){
+    return {
+      opps: Number(document.getElementById(prefix+"_opps").value)||0,
+      avgDeal: Number(document.getElementById(prefix+"_avg").value)||0,
+      winRatePct: Number(document.getElementById(prefix+"_win").value)||0,
+      cycleDays: Number(document.getElementById(prefix+"_cyc").value)||1,
+    };
+  }
+
+  function updateMain(){
+    const s = getMain();
+    const v = computeVelocity(s);
+    document.getElementById("perDay").textContent = cur() + fmt(v.perDay);
+    document.getElementById("perMonth").textContent = cur() + fmt(v.perMonth);
+    document.getElementById("perQuarter").textContent = cur() + fmt(v.perQuarter);
+  }
+
+  function updateCompare(){
+    const c = cur();
+    const a = getScenario("a");
+    const b = getScenario("b");
+    const va = computeVelocity(a);
+    const vb = computeVelocity(b);
+
+    document.getElementById("a_vm").textContent = c + fmt(va.perMonth);
+    document.getElementById("b_vm").textContent = c + fmt(vb.perMonth);
+
+    const rows = [
+      ["Vélocité / jour", va.perDay, vb.perDay],
+      ["Vélocité / mois", va.perMonth, vb.perMonth],
+      ["Vélocité / trimestre", va.perQuarter, vb.perQuarter],
+    ];
+
+    const tbody = document.getElementById("compareBody");
+    tbody.innerHTML = "";
+    rows.forEach(([label, av, bv]) => {
+      const delta = av === 0 ? 0 : ((bv - av) / av) * 100;
+      const dClass = delta > 0.1 ? 'delta-pos' : delta < -0.1 ? 'delta-neg' : 'delta-neu';
+      const sign = delta > 0 ? '+' : '';
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${label}</td>
+        <td>${c}${fmt(av)}</td>
+        <td>${c}${fmt(bv)}</td>
+        <td class="${dClass}">${sign}${delta.toFixed(1)}%</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function updateSensitivity(){
+    const c = cur();
+    const base = getMain();
+    const variable = document.getElementById("var").value;
+    const stepPct = clamp(Number(document.getElementById("step").value)||10, 1, 50);
+    const baseVelocity = computeVelocity(base).perMonth;
+    const steps = [-2, -1, 0, 1, 2];
+    const tbody = document.getElementById("sensBody");
+    tbody.innerHTML = "";
+
+    steps.forEach(k => {
+      const pct = k * stepPct;
+      const factor = 1 + pct / 100;
+      const s = {...base};
+      if (variable === "winRate") s.winRatePct = clamp(base.winRatePct * factor, 0, 100);
+      else if (variable === "opps") s.opps = Math.max(0, Math.round(base.opps * factor));
+      else if (variable === "avgDeal") s.avgDeal = Math.max(0, base.avgDeal * factor);
+      else if (variable === "cycle") s.cycleDays = Math.max(1, Math.round(base.cycleDays / factor));
+
+      const v = computeVelocity(s).perMonth;
+      const delta = baseVelocity === 0 ? 0 : ((v - baseVelocity) / baseVelocity) * 100;
+      const dClass = delta > 0.1 ? 'delta-pos' : delta < -0.1 ? 'delta-neg' : 'delta-neu';
+      const sign = delta >= 0 ? '+' : '';
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${pct >= 0 ? '+' : ''}${pct}%</td>
+        <td>${c}${fmt(v)}</td>
+        <td class="${dClass}">${sign}${delta.toFixed(1)}%</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function updateAll(){
+    updateMain();
+    updateCompare();
+    updateSensitivity();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Main inputs
+    ["currency","opps","avgDeal","winRate","cycle"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateAll);
+    });
+
+    // Scenario inputs
+    ["a_opps","a_avg","a_win","a_cyc","b_opps","b_avg","b_win","b_cyc"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateCompare);
+    });
+
+    // Sensitivity controls
+    ["var","step"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateSensitivity);
+    });
+
+    // Copy A to B
+    document.getElementById("copyAtoB").addEventListener("click", () => {
+      ["opps","avg","win","cyc"].forEach(k => {
+        document.getElementById("b_"+k).value = document.getElementById("a_"+k).value;
+      });
+      updateCompare();
+    });
+
+    // Initial render
+    updateAll();
+  });
+</script>
+</body>
+</html>
